@@ -1,0 +1,43 @@
+kind: io.statefun.endpoints.v2/http
+spec:
+  functions: com.github.f1xman.gringotts.account/*
+  urlPathTemplate: http://192.168.0.107:8092/{function.name}
+---
+kind: io.statefun.endpoints.v2/http
+spec:
+  functions: com.github.f1xman.gringotts.transaction/*
+  urlPathTemplate: http://192.168.0.107:8093/{function.name}
+---
+kind: io.statefun.kafka.v1/ingress
+spec:
+  id: com.github.f1xman.gringotts.account/init-account-ingress
+  address: 192.168.0.107:9092
+  consumerGroupId: gringotts-payment-engine
+  topics:
+    - topic: init-account-commands
+      valueType: com.github.f1xman.gringotts.account.command/InitAccount
+      targets:
+        - com.github.f1xman.gringotts.account/Account
+---
+kind: io.statefun.kafka.v1/ingress
+spec:
+  id: com.github.f1xman.gringotts.transaction/execute-transaction
+  address: 192.168.0.107:9092
+  consumerGroupId: gringotts-payment-engine
+  topics:
+    - topic: execute-transaction-commands
+      valueType: com.github.f1xman.gringotts.transaction.command/ExecuteTransaction
+      targets:
+        - com.github.f1xman.gringotts.transaction/Transaction
+
+
+
+
+
+
+
+
+
+
+
+

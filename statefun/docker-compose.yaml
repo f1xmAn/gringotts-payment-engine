@@ -1,0 +1,27 @@
+version: "2.1"
+services:
+  master:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    expose:
+      - "6123"
+    ports:
+      - "8091:8081"
+    environment:
+      - ROLE=master
+      - MASTER_HOST=master
+  worker:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    expose:
+      - "6121"
+      - "6122"
+    depends_on:
+      - master
+    links:
+      - "master:master"
+    environment:
+      - ROLE=worker
+      - MASTER_HOST=master
